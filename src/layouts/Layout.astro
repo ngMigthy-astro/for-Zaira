@@ -1,0 +1,27 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+}
+
+const { title = "Un regalito especial para Zaira 💖" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		
+		<!-- SEO Meta tags -->
+		<meta name="description" content="Una sorpresa interactiva muy especial con cariño para Zaira." />
+		<meta name="theme-color" content="#ffb7c5" />
+	</head>
+	<body class="bg-love-light text-slate-800 antialiased selection:bg-love-soft selection:text-white">
+		<slot />
+	</body>
+</html>

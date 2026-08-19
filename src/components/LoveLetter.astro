@@ -1,0 +1,256 @@
+---
+// LoveLetter Component
+// Renders an interactive 3D envelope that opens on click, revealing a beautiful sliding letter.
+---
+
+<div
+  class="relative w-full max-w-md mx-auto mt-16 px-4 select-none flex flex-col items-center"
+>
+  <!-- Perspective Container for 3D elements -->
+  <div class="perspective-1000 w-full flex justify-center">
+    <!-- Envelope Wrapper -->
+    <div
+      id="envelope"
+      class="relative w-80 h-52 bg-love-pastel/40 rounded-2xl shadow-lg border border-white/20 transition-all duration-700 ease-in-out cursor-pointer origin-bottom"
+    >
+      <!-- Inside Back (Background behind the letter) -->
+      <div class="absolute inset-0 bg-love-soft/20 rounded-2xl overflow-hidden">
+        <!-- Inner pattern/gradient -->
+        <div
+          class="w-full h-full bg-gradient-to-tr from-love-pastel/30 to-transparent"
+        >
+        </div>
+      </div>
+
+      <!-- The Letter (Slides up) -->
+      <div
+        id="letter"
+        class="absolute left-4 right-4 top-4 bg-white rounded-xl p-5 shadow-inner border border-love-pastel/30 transition-all duration-700 ease-in-out z-10 translate-y-0 opacity-0 pointer-events-none"
+        style="height: 340px;"
+      >
+        <div class="flex flex-col h-full justify-between">
+          <!-- Letter Content -->
+          <div class="overflow-y-auto pr-1">
+            <!-- Stamp/Decorative top -->
+            <div
+              class="flex justify-between items-center border-b border-love-dust/30 pb-2 mb-3"
+            >
+              <span
+                class="font-handwritten text-4xl text-love-vibrant leading-none"
+                >Para: Zaira 🌸</span
+              >
+              <span class="text-xl">🐾</span>
+            </div>
+
+            <p
+              class="font-sans text-sm text-slate-700 leading-relaxed text-justify"
+            >
+              ¡Hola, Zaira! Espero que estés teniendo un día muy bonito. Quería
+              darte este detallito; ahora se que es tu color favorito. La verdad
+              disfruto mucho platicar contigo y me da mucho gusto haberte
+              conocido, así que espero que te guste mucho.
+            </p>
+            <p
+              class="font-sans text-sm text-slate-700 leading-relaxed text-justify mt-2"
+            >
+              Podés acariciarlo, darle sus premios o hacerle cosquillas; ¡se
+              pone re contento cuando jugás con él! Espero que este detalle te
+              saque una sonrisa gigante. Te mando un abrazo enorme. ✨
+            </p>
+
+            <!-- Letter Sign-off -->
+            <div class="mt-4 text-right">
+              <span
+                class="font-handwritten text-3xl text-love-vibrant block leading-none"
+                >Con cariño,</span
+              >
+              <span class="text-xs text-slate-400 font-bold block mt-1"
+                >Tu Amigo Especial</span
+              >
+            </div>
+          </div>
+
+          <!-- Close Letter Button -->
+          <button
+            id="btn-close-letter"
+            class="w-full mt-2 py-1.5 rounded-xl bg-love-soft hover:bg-love-vibrant text-white font-bold text-xs shadow-sm transition-all duration-300 hover:scale-[1.02] active:scale-95 cursor-pointer"
+          >
+            Guardar Carta 💌
+          </button>
+        </div>
+      </div>
+
+      <!-- Envelope Flap (Top triangle that folds down) -->
+      <div
+        id="envelope-flap"
+        class="absolute top-0 left-0 w-full h-28 origin-top transition-transform duration-500 ease-in-out z-20"
+        style="clip-path: polygon(0 0, 50% 100%, 100% 0);"
+      >
+        <!-- Background glassmorphism for flap -->
+        <div
+          class="w-full h-full bg-love-pastel border-t border-white/40 shadow-sm"
+        >
+        </div>
+      </div>
+
+      <!-- Left and Right Folds (Internal design visual) -->
+      <div
+        class="absolute bottom-0 left-0 w-1/2 h-28 bg-love-pastel/60 border-l border-white/20 z-15"
+        style="clip-path: polygon(0 0, 100% 100%, 0 100%);"
+      >
+      </div>
+      <div
+        class="absolute bottom-0 right-0 w-1/2 h-28 bg-love-pastel/60 border-r border-white/20 z-15"
+        style="clip-path: polygon(100% 0, 100% 100%, 0 100%);"
+      >
+      </div>
+
+      <!-- Front Bottom Fold (Covering the bottom half of the envelope) -->
+      <div
+        class="absolute bottom-0 left-0 w-full h-28 bg-love-pastel/80 rounded-b-2xl border-t border-white/30 shadow-2xl z-18 flex items-center justify-center"
+        style="clip-path: polygon(0 40%, 50% 0, 100% 40%, 100% 100%, 0 100%);"
+      >
+      </div>
+
+      <!-- Heart Seal Button (Acts as lock/unlock) -->
+      <div
+        id="heart-seal-wrapper"
+        class="absolute inset-0 flex items-center justify-center z-30 pointer-events-none"
+      >
+        <button
+          id="btn-open-envelope"
+          class="w-14 h-14 bg-white border-2 border-love-vibrant text-love-vibrant rounded-full flex items-center justify-center shadow-md animate-heart-pulse hover:scale-110 active:scale-95 transition-all duration-300 pointer-events-auto cursor-pointer"
+          title="Abrir sorpresa"
+        >
+          <span class="text-2xl">💝</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subtitle tip -->
+  <p
+    id="letter-tip"
+    class="mt-4 text-xs font-semibold text-love-vibrant/70 animate-pulse text-center"
+  >
+    ¡Hacé click en el sobre para abrir tu sorpresa!
+  </p>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // DOM Element Declarations
+    const envelope = document.getElementById(
+      "envelope",
+    ) as HTMLDivElement | null;
+    const flap = document.getElementById(
+      "envelope-flap",
+    ) as HTMLDivElement | null;
+    const letter = document.getElementById("letter") as HTMLDivElement | null;
+    const seal = document.getElementById(
+      "btn-open-envelope",
+    ) as HTMLButtonElement | null;
+    const sealWrapper = document.getElementById(
+      "heart-seal-wrapper",
+    ) as HTMLDivElement | null;
+    const btnClose = document.getElementById(
+      "btn-close-letter",
+    ) as HTMLButtonElement | null;
+    const letterTip = document.getElementById(
+      "letter-tip",
+    ) as HTMLParagraphElement | null;
+
+    let isOpened = false;
+
+    // --- ENVELOPE OPEN FUNCTION ---
+    const openEnvelope = () => {
+      if (isOpened || !envelope || !flap || !letter || !seal || !letterTip)
+        return;
+      isOpened = true;
+
+      // 1. Hide the heart seal and the help tip
+      seal.style.opacity = "0";
+      seal.style.transform = "scale(0)";
+      if (sealWrapper) sealWrapper.style.pointerEvents = "none";
+      letterTip.style.opacity = "0";
+
+      // 2. Flip the envelope lid open (Rotate X axis up)
+      flap.style.transform = "rotateX(180deg)";
+
+      // Delay z-index switch of the flap so the letter can slide over it
+      setTimeout(() => {
+        flap.style.zIndex = "5";
+      }, 300);
+
+      // 3. Slide the letter upwards
+      setTimeout(() => {
+        letter.style.opacity = "1";
+        letter.style.transform = "translateY(-285px)";
+        letter.style.pointerEvents = "auto";
+
+        // Slightly tilt the envelope for realism
+        envelope.style.transform = "rotate(-1.5deg) scale(1.02)";
+      }, 400);
+    };
+
+    // --- ENVELOPE CLOSE FUNCTION ---
+    const closeEnvelope = (event: MouseEvent) => {
+      // Prevent event bubbling if clicked inside the letter buttons
+      event.stopPropagation();
+
+      if (!isOpened || !envelope || !flap || !letter || !seal || !letterTip)
+        return;
+      isOpened = false;
+
+      // 1. Slide the letter back inside
+      letter.style.transform = "translateY(0px)";
+      letter.style.opacity = "0";
+      letter.style.pointerEvents = "none";
+      envelope.style.transform = "rotate(0deg) scale(1)";
+
+      // 2. Fold the flap back down
+      setTimeout(() => {
+        flap.style.zIndex = "20";
+        flap.style.transform = "rotateX(0deg)";
+      }, 400);
+
+      // 3. Restore the heart seal and helper text
+      setTimeout(() => {
+        seal.style.opacity = "1";
+        seal.style.transform = "scale(1)";
+        if (sealWrapper) sealWrapper.style.pointerEvents = "auto";
+        letterTip.style.opacity = "1";
+      }, 800);
+    };
+
+    // Add click listeners
+    seal?.addEventListener("click", openEnvelope);
+    envelope?.addEventListener("click", (e) => {
+      // Allow opening the envelope by clicking the envelope itself if not already open
+      if (!isOpened) {
+        openEnvelope();
+      }
+    });
+
+    btnClose?.addEventListener("click", (e) => {
+      closeEnvelope(e as unknown as MouseEvent);
+    });
+  });
+</script>
+
+<style>
+  /* 3D Perspective Utilities */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  /* Preserve 3D transformations for the flap */
+  #envelope {
+    transform-style: preserve-3d;
+  }
+
+  #envelope-flap {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+  }
+</style>

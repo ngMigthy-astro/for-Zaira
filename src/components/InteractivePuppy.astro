@@ -1,0 +1,568 @@
+---
+// InteractivePuppy Component
+// Handles the animated SVG puppy, cursor tracking, and button interactions.
+---
+
+<div
+  class="relative w-full max-w-sm mx-auto flex flex-col items-center select-none"
+>
+  <!-- Floating Hearts/Stars Container -->
+  <div
+    id="particles-container"
+    class="absolute inset-0 pointer-events-none overflow-hidden z-10"
+  >
+  </div>
+
+  <!-- Falling Treat (Bone) -->
+  <div
+    id="treat-bone"
+    class="absolute -top-16 left-1/2 -translate-x-1/2 w-12 h-12 pointer-events-none opacity-0 z-20"
+  >
+    <svg viewBox="0 0 100 50" class="w-full h-full drop-shadow-md">
+      <!-- Bone SVG -->
+      <path
+        d="M 20 25 C 10 25, 10 5, 20 5 C 30 5, 30 25, 40 25 L 60 25 C 70 25, 70 5, 80 5 C 90 5, 90 25, 80 25 C 90 25, 90 45, 80 45 C 70 45, 70 25, 60 25 L 40 25 C 30 25, 30 45, 20 45 C 10 45, 10 25, 20 25 Z"
+        fill="#ffe5ec"
+        stroke="#ff8fa3"
+        stroke-width="3"></path>
+    </svg>
+  </div>
+
+  <!-- Puppy Container (Wobbles when tickled) -->
+  <div
+    id="puppy-body-wrapper"
+    class="relative w-64 h-64 md:w-72 md:h-72 transition-all duration-300"
+  >
+    <svg viewBox="0 0 200 200" class="w-full h-full overflow-visible">
+      <!-- Tail -->
+      <path
+        id="puppy-tail"
+        d="M 140 140 C 160 115, 175 110, 185 125 C 195 140, 175 165, 148 152"
+        fill="var(--color-puppy-ears)"
+        class="origin-[140px_145px] animate-tail-wag"></path>
+
+      <!-- Back Paws -->
+      <ellipse cx="55" cy="168" rx="14" ry="9" fill="var(--color-puppy-spots)"
+      ></ellipse>
+      <ellipse cx="145" cy="168" rx="14" ry="9" fill="var(--color-puppy-spots)"
+      ></ellipse>
+
+      <!-- Body -->
+      <ellipse cx="100" cy="142" rx="48" ry="34" fill="var(--color-puppy-fur)"
+      ></ellipse>
+
+      <!-- Front Paws -->
+      <ellipse cx="82" cy="168" rx="12" ry="12" fill="var(--color-puppy-fur)"
+      ></ellipse>
+      <ellipse cx="118" cy="168" rx="12" ry="12" fill="var(--color-puppy-fur)"
+      ></ellipse>
+      <circle
+        cx="82"
+        cy="168"
+        r="8"
+        fill="var(--color-puppy-spots)"
+        opacity="0.3"></circle>
+      <circle
+        cx="118"
+        cy="168"
+        r="8"
+        fill="var(--color-puppy-spots)"
+        opacity="0.3"></circle>
+
+      <!-- Ears -->
+      <!-- Left Ear (Wiggles on interact) -->
+      <path
+        id="ear-left"
+        d="M 45 65 C 15 65, 20 120, 45 120 C 62 120, 60 75, 55 65"
+        fill="var(--color-puppy-ears)"
+        class="origin-[50px_65px] transition-transform duration-300"></path>
+      <!-- Right Ear -->
+      <path
+        id="ear-right"
+        d="M 155 65 C 185 65, 180 120, 155 120 C 138 120, 140 75, 145 65"
+        fill="var(--color-puppy-ears)"
+        class="origin-[150px_65px] transition-transform duration-300"></path>
+
+      <!-- Head -->
+      <g id="puppy-head" class="origin-center animate-puppy-breathe">
+        <!-- Face Base -->
+        <circle cx="100" cy="90" r="52" fill="var(--color-puppy-fur)"></circle>
+
+        <!-- Big patch on left eye (super cute!) -->
+        <ellipse
+          cx="80"
+          cy="85"
+          rx="20"
+          ry="24"
+          fill="var(--color-puppy-spots)"
+          transform="rotate(-8, 80, 85)"
+          class="origin-[80px_85px]"></ellipse>
+
+        <!-- Normal Eyes -->
+        <g id="eyes-normal" class="transition-opacity duration-200">
+          <!-- Left Eye -->
+          <circle id="eye-left-bg" cx="80" cy="85" r="10" fill="#ffffff"
+          ></circle>
+          <circle id="pupil-left" cx="80" cy="85" r="5" fill="#3a2228"></circle>
+          <circle cx="77.5" cy="82.5" r="2" fill="#ffffff"></circle>
+
+          <!-- Right Eye -->
+          <circle id="eye-right-bg" cx="120" cy="85" r="10" fill="#ffffff"
+          ></circle>
+          <circle id="pupil-right" cx="120" cy="85" r="5" fill="#3a2228"
+          ></circle>
+          <circle cx="117.5" cy="82.5" r="2" fill="#ffffff"></circle>
+        </g>
+
+        <!-- Happy/Closed Eyes (Hidden by default) -->
+        <g
+          id="eyes-happy"
+          class="opacity-0 transition-opacity duration-200 pointer-events-none"
+        >
+          <!-- Left Curved Path -->
+          <path
+            d="M 70 87 Q 80 75 90 87"
+            fill="none"
+            stroke="#3a2228"
+            stroke-width="4.5"
+            stroke-linecap="round"></path>
+          <!-- Right Curved Path -->
+          <path
+            d="M 110 87 Q 120 75 130 87"
+            fill="none"
+            stroke="#3a2228"
+            stroke-width="4.5"
+            stroke-linecap="round"></path>
+        </g>
+
+        <!-- Shocked Eyes (Hidden by default) -->
+        <g
+          id="eyes-shocked"
+          class="opacity-0 transition-opacity duration-200 pointer-events-none"
+        >
+          <!-- Left Ring -->
+          <circle
+            cx="80"
+            cy="85"
+            r="8.5"
+            fill="#ffffff"
+            stroke="#3a2228"
+            stroke-width="3"></circle>
+          <circle cx="80" cy="85" r="3" fill="#3a2228"></circle>
+          <!-- Right Ring -->
+          <circle
+            cx="120"
+            cy="85"
+            r="8.5"
+            fill="#ffffff"
+            stroke="#3a2228"
+            stroke-width="3"></circle>
+          <circle cx="120" cy="85" r="3" fill="#3a2228"></circle>
+        </g>
+
+        <!-- Nose -->
+        <path d="M 94 99 Q 100 95 106 99 Q 102 106 94 99 Z" fill="#3a2228"
+        ></path>
+        <ellipse cx="98" cy="98" rx="2" ry="1" fill="#ffffff" opacity="0.6"
+        ></ellipse>
+
+        <!-- Muzzle and Mouth -->
+        <g id="mouth-wrapper">
+          <!-- Cheek Line -->
+          <path
+            d="M 92 104 Q 100 110 100 104 Q 100 110 108 104"
+            fill="none"
+            stroke="#3a2228"
+            stroke-width="2.5"
+            stroke-linecap="round"></path>
+          <!-- Tongue (Pants on breathe) -->
+          <path
+            id="puppy-tongue"
+            d="M 97 106 C 96 116, 104 116, 103 106 Z"
+            fill="var(--color-love-soft)"
+            class="origin-top scale-y-0 transition-transform duration-200"
+          ></path>
+        </g>
+      </g>
+    </svg>
+
+    <!-- Speech bubble (Reacts visually) -->
+    <div
+      id="speech-bubble"
+      class="absolute -top-6 -right-6 bg-white text-love-vibrant border-2 border-love-pastel px-3 py-1.5 rounded-2xl text-sm font-semibold opacity-0 scale-75 transition-all duration-300 shadow-md"
+    >
+      ¡Guau! 🐾
+    </div>
+  </div>
+
+  <!-- Interactive Control Panel -->
+  <div class="mt-8 grid grid-cols-3 gap-3 w-full px-4">
+    <!-- Pet Button -->
+    <button
+      id="btn-pet"
+      class="flex flex-col items-center justify-center p-3 rounded-2xl bg-white border-2 border-love-pastel text-slate-700 shadow-sm transition-all duration-300 hover:scale-105 hover:border-love-soft active:scale-95 cursor-pointer group"
+    >
+      <span class="text-2xl group-hover:animate-heart-pulse">💖</span>
+      <span
+        class="text-xs font-bold mt-1 text-slate-500 group-hover:text-love-vibrant"
+        >Acariciar</span
+      >
+    </button>
+
+    <!-- Feed Button -->
+    <button
+      id="btn-feed"
+      class="flex flex-col items-center justify-center p-3 rounded-2xl bg-white border-2 border-love-pastel text-slate-700 shadow-sm transition-all duration-300 hover:scale-105 hover:border-love-soft active:scale-95 cursor-pointer group"
+    >
+      <span class="text-2xl group-hover:-translate-y-1 transition-transform"
+        >🍖</span
+      >
+      <span
+        class="text-xs font-bold mt-1 text-slate-500 group-hover:text-love-vibrant"
+        >Dar Premio</span
+      >
+    </button>
+
+    <!-- Tickle Button -->
+    <button
+      id="btn-tickle"
+      class="flex flex-col items-center justify-center p-3 rounded-2xl bg-white border-2 border-love-pastel text-slate-700 shadow-sm transition-all duration-300 hover:scale-105 hover:border-love-soft active:scale-95 cursor-pointer group"
+    >
+      <span class="text-2xl group-hover:rotate-12 transition-transform">🌟</span
+      >
+      <span
+        class="text-xs font-bold mt-1 text-slate-500 group-hover:text-love-vibrant"
+        >Cosquillas</span
+      >
+    </button>
+  </div>
+</div>
+
+<script>
+  // Puppy Interaction Script (TypeScript)
+  document.addEventListener("DOMContentLoaded", () => {
+    // DOM Element Declarations with strict typing
+    const puppyHead = document.getElementById(
+      "puppy-head",
+    ) as SVGGElement | null;
+    const bodyWrapper = document.getElementById(
+      "puppy-body-wrapper",
+    ) as HTMLDivElement | null;
+    const pupilLeft = document.getElementById(
+      "pupil-left",
+    ) as SVGCircleElement | null;
+    const pupilRight = document.getElementById(
+      "pupil-right",
+    ) as SVGCircleElement | null;
+    const eyesNormal = document.getElementById(
+      "eyes-normal",
+    ) as SVGGElement | null;
+    const eyesHappy = document.getElementById(
+      "eyes-happy",
+    ) as SVGGElement | null;
+    const eyesShocked = document.getElementById(
+      "eyes-shocked",
+    ) as SVGGElement | null;
+    const tail = document.getElementById("puppy-tail") as SVGPathElement | null;
+    const earLeft = document.getElementById(
+      "ear-left",
+    ) as SVGPathElement | null;
+    const earRight = document.getElementById(
+      "ear-right",
+    ) as SVGPathElement | null;
+    const tongue = document.getElementById(
+      "puppy-tongue",
+    ) as SVGPathElement | null;
+    const speechBubble = document.getElementById(
+      "speech-bubble",
+    ) as HTMLDivElement | null;
+    const treatBone = document.getElementById(
+      "treat-bone",
+    ) as HTMLDivElement | null;
+    const particlesContainer = document.getElementById(
+      "particles-container",
+    ) as HTMLDivElement | null;
+
+    // Control Buttons
+    const btnPet = document.getElementById(
+      "btn-pet",
+    ) as HTMLButtonElement | null;
+    const btnFeed = document.getElementById(
+      "btn-feed",
+    ) as HTMLButtonElement | null;
+    const btnTickle = document.getElementById(
+      "btn-tickle",
+    ) as HTMLButtonElement | null;
+
+    // Pupil Reference Positions (Centers of the eyeballs)
+    const LEFT_EYE_CENTER = { x: 80, y: 85 };
+    const RIGHT_EYE_CENTER = { x: 120, y: 85 };
+    const MAX_PUPIL_OFFSET = 4.5; // Maximum radius the pupil can move
+
+    let isInteracting = false;
+
+    // --- CURSOR TRACKING (EYE FOLLOW) ---
+    const handleMouseMove = (event: MouseEvent) => {
+      if (isInteracting || !pupilLeft || !pupilRight) return;
+
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+
+      // Update for Left Eye
+      updatePupilPosition(pupilLeft, LEFT_EYE_CENTER, mouseX, mouseY);
+      // Update for Right Eye
+      updatePupilPosition(pupilRight, RIGHT_EYE_CENTER, mouseX, mouseY);
+    };
+
+    const updatePupilPosition = (
+      pupil: SVGCircleElement,
+      center: { x: number; y: number },
+      targetX: number,
+      targetY: number,
+    ) => {
+      const rect = pupil.getBoundingClientRect();
+      const eyeAbsoluteX = rect.left + rect.width / 2;
+      const eyeAbsoluteY = rect.top + rect.height / 2;
+
+      const deltaX = targetX - eyeAbsoluteX;
+      const deltaY = targetY - eyeAbsoluteY;
+      const distance = Math.hypot(deltaX, deltaY);
+
+      let offset = MAX_PUPIL_OFFSET;
+      if (distance < 100) {
+        // Soften movement if cursor is very close
+        offset = (distance / 100) * MAX_PUPIL_OFFSET;
+      }
+
+      const angle = Math.atan2(deltaY, deltaX);
+      const moveX = Math.cos(angle) * offset;
+      const moveY = Math.sin(angle) * offset;
+
+      pupil.setAttribute("cx", (center.x + moveX).toString());
+      pupil.setAttribute("cy", (center.y + moveY).toString());
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+
+    // --- PARTICLE EMITTER (HEARTS & CONFETTI) ---
+    const spawnParticles = (
+      type: "heart" | "star" | "confetti",
+      count: number,
+    ) => {
+      if (!particlesContainer) return;
+
+      const symbols =
+        type === "heart"
+          ? ["💖", "💕", "💗", "❤"]
+          : type === "star"
+            ? ["⭐", "✨", "🌟"]
+            : ["🎉", "🌸", "✨"];
+
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement("span");
+        particle.innerText =
+          symbols[Math.floor(Math.random() * symbols.length)];
+        particle.className =
+          "absolute text-xl pointer-events-none select-none animate-float-slow z-30";
+
+        // Random horizontal start position around the center
+        const startX = 40 + Math.random() * 20; // percentage
+        const startY = 50 + Math.random() * 15; // percentage
+
+        // Add random speed variance
+        const duration = 2.5 + Math.random() * 2;
+        const scale = 0.5 + Math.random() * 1.2;
+        const leftVariance = (Math.random() - 0.5) * 45; // move left/right
+
+        particle.style.left = `${startX}%`;
+        particle.style.top = `${startY}%`;
+        particle.style.transform = `scale(${scale})`;
+        particle.style.animationDuration = `${duration}s`;
+
+        // Custom horizontal drift keyframes in inline style
+        particle.animate(
+          [
+            { transform: `translate(0, 0) scale(${scale})`, opacity: 0 },
+            { opacity: 1, offset: 0.1 },
+            {
+              transform: `translate(${leftVariance}px, -150px) scale(${scale})`,
+              opacity: 0,
+            },
+          ],
+          {
+            duration: duration * 1000,
+            easing: "ease-out",
+          },
+        );
+
+        particlesContainer.appendChild(particle);
+
+        // Auto cleanup
+        setTimeout(() => {
+          particle.remove();
+        }, duration * 1000);
+      }
+    };
+
+    // --- UTILITIES FOR PUPPY EXPRESSIONS ---
+    const showHappyFace = (durationMs: number) => {
+      isInteracting = true;
+
+      // Toggle eyes
+      if (eyesNormal) eyesNormal.style.opacity = "0";
+      if (eyesHappy) eyesHappy.style.opacity = "1";
+      if (eyesShocked) eyesShocked.style.opacity = "0";
+
+      // Stick out tongue
+      if (tongue) {
+        tongue.style.transform = "scaleY(1.3)";
+        tongue.classList.add("animate-tongue-pant");
+      }
+
+      // Faster tail wagging
+      if (tail) {
+        tail.style.animationDuration = "0.2s";
+      }
+
+      // Wiggle Ears
+      if (earLeft) earLeft.style.transform = "rotate(-12deg)";
+      if (earRight) earRight.style.transform = "rotate(12deg)";
+
+      setTimeout(() => {
+        resetExpression();
+      }, durationMs);
+    };
+
+    const resetExpression = () => {
+      isInteracting = false;
+
+      // Reset eyes
+      if (eyesNormal) eyesNormal.style.opacity = "1";
+      if (eyesHappy) eyesHappy.style.opacity = "0";
+      if (eyesShocked) eyesShocked.style.opacity = "0";
+
+      // Retract tongue
+      if (tongue) {
+        tongue.style.transform = "scaleY(0)";
+        tongue.classList.remove("animate-tongue-pant");
+      }
+
+      // Restore tail speed
+      if (tail) {
+        tail.style.animationDuration = "0.8s";
+      }
+
+      // Restore ears
+      if (earLeft) earLeft.style.transform = "rotate(0deg)";
+      if (earRight) earRight.style.transform = "rotate(0deg)";
+
+      // Recenter pupils
+      if (pupilLeft) {
+        pupilLeft.setAttribute("cx", LEFT_EYE_CENTER.x.toString());
+        pupilLeft.setAttribute("cy", LEFT_EYE_CENTER.y.toString());
+      }
+      if (pupilRight) {
+        pupilRight.setAttribute("cx", RIGHT_EYE_CENTER.x.toString());
+        pupilRight.setAttribute("cy", RIGHT_EYE_CENTER.y.toString());
+      }
+    };
+
+    const triggerSpeechBubble = (text: string) => {
+      if (!speechBubble) return;
+      speechBubble.innerText = text;
+      speechBubble.style.opacity = "1";
+      speechBubble.style.transform = "scale(1) translateY(-10px)";
+
+      setTimeout(() => {
+        speechBubble.style.opacity = "0";
+        speechBubble.style.transform = "scale(0.75) translateY(0px)";
+      }, 2000);
+    };
+
+    // --- BUTTON INTERACTIONS ---
+
+    // 1. Pet / Acariciar
+    btnPet?.addEventListener("click", () => {
+      showHappyFace(2500);
+      spawnParticles("heart", 15);
+      // triggerSpeechBubble('¡Aii, qué rico! 💖');
+
+      // Soft wiggle on head
+      if (puppyHead) {
+        puppyHead.animate(
+          [
+            { transform: "rotate(0deg)" },
+            { transform: "rotate(-5deg)", offset: 0.25 },
+            { transform: "rotate(5deg)", offset: 0.75 },
+            { transform: "rotate(0deg)" },
+          ],
+          {
+            duration: 600,
+            iterations: 2,
+          },
+        );
+      }
+    });
+
+    // 2. Feed / Dar Premio
+    btnFeed?.addEventListener("click", () => {
+      if (!treatBone || isInteracting) return;
+
+      isInteracting = true;
+
+      // Shocked/Excited face before bone lands
+      if (eyesNormal) eyesNormal.style.opacity = "0";
+      if (eyesShocked) eyesShocked.style.opacity = "1";
+      if (tail) tail.style.animationDuration = "0.3s";
+
+      // Dynamically calculate responsive target position to muzzle
+      let targetY = 220; // fallback in pixels
+      if (bodyWrapper && tongue) {
+        const wrapperRect = bodyWrapper.getBoundingClientRect();
+        const tongueRect = tongue.getBoundingClientRect();
+        // Calculate vertical distance from bone initial top offset (-64px) to the center of the tongue
+        targetY = (tongueRect.top - wrapperRect.top) + (tongueRect.height / 2) + 64;
+      }
+
+      // Animate Bone Fall
+      treatBone.style.opacity = "1";
+      treatBone.style.transform = `translateX(-50%) translateY(${targetY}px) rotate(180deg)`;
+
+      setTimeout(() => {
+        // Bone eaten: hide bone and trigger eating animation
+        treatBone.style.opacity = "0";
+        treatBone.style.transform = "translateX(-50%) translateY(0px) rotate(0deg)";
+
+        spawnParticles("confetti", 12);
+        showHappyFace(2000);
+      }, 800);
+    });
+
+    // 3. Tickle / Cosquillas
+    btnTickle?.addEventListener("click", () => {
+      showHappyFace(2500);
+      spawnParticles("star", 12);
+      // triggerSpeechBubble("¡Hahaha, cosquillas! ✨");
+
+      // Body vibration effect
+      if (bodyWrapper) {
+        bodyWrapper.animate(
+          [
+            { transform: "translateX(0) rotate(0deg)" },
+            { transform: "translateX(-6px) rotate(-2deg)", offset: 0.15 },
+            { transform: "translateX(5px) rotate(3deg)", offset: 0.3 },
+            { transform: "translateX(-5px) rotate(-2deg)", offset: 0.45 },
+            { transform: "translateX(4px) rotate(2deg)", offset: 0.6 },
+            { transform: "translateX(-3px) rotate(-1deg)", offset: 0.75 },
+            { transform: "translateX(2px) rotate(1deg)", offset: 0.9 },
+            { transform: "translateX(0) rotate(0deg)" },
+          ],
+          {
+            duration: 1000,
+            iterations: 2,
+          },
+        );
+      }
+    });
+  });
+</script>

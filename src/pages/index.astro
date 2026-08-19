@@ -1,0 +1,85 @@
+---
+import Layout from "../layouts/Layout.astro";
+import InteractivePuppy from "../components/InteractivePuppy.astro";
+import LoveLetter from "../components/LoveLetter.astro";
+---
+
+<Layout title="Un regalito especial para Zaira 💖">
+  <!-- Interactive Background with Gradients and Sparkles -->
+  <main
+    class="relative min-h-screen w-full flex flex-col items-center justify-between py-12 px-4 bg-gradient-to-b from-love-light via-love-dust/30 to-love-light overflow-hidden"
+  >
+    <!-- Sparkly Background Elements -->
+    <div class="absolute inset-0 pointer-events-none z-0">
+      <!-- Sparkle stars placed dynamically -->
+      <span
+        class="absolute top-[10%] left-[15%] text-2xl opacity-60 animate-sparkle"
+        style="animation-delay: 0.2s;">✨</span
+      >
+      <span
+        class="absolute top-[25%] right-[20%] text-xl opacity-40 animate-sparkle"
+        style="animation-delay: 0.8s;">⭐</span
+      >
+      <span
+        class="absolute top-[60%] left-[8%] text-3xl opacity-50 animate-sparkle"
+        style="animation-delay: 1.5s;">🌸</span
+      >
+      <span
+        class="absolute top-[75%] right-[10%] text-2xl opacity-60 animate-sparkle"
+        style="animation-delay: 0.5s;">✨</span
+      >
+      <span
+        class="absolute bottom-[20%] left-[25%] text-lg opacity-40 animate-sparkle"
+        style="animation-delay: 1.1s;">⭐</span
+      >
+      <span
+        class="absolute top-[45%] right-[8%] text-2xl opacity-40 animate-sparkle"
+        style="animation-delay: 1.9s;">💖</span
+      >
+      <span
+        class="absolute bottom-[35%] right-[28%] text-xl opacity-35 animate-sparkle"
+        style="animation-delay: 0.3s;">🌸</span
+      >
+    </div>
+
+    <!-- Header Section -->
+    <header class="relative text-center max-w-md mx-auto z-10 select-none">
+      <h1
+        class="font-sans font-bold text-4xl md:text-5xl text-love-dark tracking-tight drop-shadow-sm"
+      >
+        ¡Hola, Zaira! 🐶✨
+      </h1>
+      <p
+        class="mt-2 text-sm font-semibold text-love-soft uppercase tracking-wider"
+      >
+        De parte de un amigo que te aprecia ❤️
+      </p>
+
+      <!-- Decorative dividing line with paws -->
+      <div class="flex items-center justify-center gap-2 mt-4">
+        <span class="h-[1px] w-12 bg-love-pastel"></span>
+        <span class="text-love-pastel text-xs">🐾 🌸 🐾</span>
+        <span class="h-[1px] w-12 bg-love-pastel"></span>
+      </div>
+    </header>
+
+    <!-- Interactive Puppy Section -->
+    <section
+      class="relative z-10 w-full flex-grow flex items-center justify-center py-6"
+    >
+      <InteractivePuppy />
+    </section>
+
+    <!-- Surprise Envelope Section -->
+    <section class="relative z-20 w-full pb-6 pt-16">
+      <LoveLetter />
+    </section>
+
+    <!-- Footer decoration -->
+    <footer
+      class="relative z-10 text-center select-none mt-8 text-love-soft/60 text-xs font-semibold"
+    >
+      <p>Hecho con mucho cariño para Zaira 💖</p>
+    </footer>
+  </main>
+</Layout>

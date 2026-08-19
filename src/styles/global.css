@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Sacramento&display=swap');
+
+@theme {
+  /* Font Family Customization */
+  --font-sans: 'Outfit', sans-serif;
+  --font-handwritten: 'Sacramento', cursive;
+
+  /* Custom Color Palette (Shades of Pink and Pastels) */
+  --color-love-light: #fff5f7;
+  --color-love-pastel: #ffb7c5;
+  --color-love-soft: #ff8fa3;
+  --color-love-vibrant: #ff4d6d;
+  --color-love-dark: #c9184a;
+  --color-love-deep: #590d22;
+  
+  --color-puppy-fur: #f7d1cd;
+  --color-puppy-ears: #e8acb5;
+  --color-puppy-spots: #db7b93;
+  --color-gold-dust: #ffe5ec;
+
+  /* Custom Animations & Keyframes */
+  --animate-tail-wag: tail-wag 0.8s ease-in-out infinite alternate;
+  --animate-puppy-breathe: puppy-breathe 3s ease-in-out infinite alternate;
+  --animate-heart-pulse: heart-pulse 1.2s ease-in-out infinite;
+  --animate-float-slow: float-slow 6s ease-in-out infinite;
+  --animate-sparkle: sparkle 1.5s ease-in-out infinite;
+  --animate-tongue-pant: tongue-pant 0.3s ease-in-out infinite alternate;
+
+  @keyframes tail-wag {
+    0% { transform: rotate(-5deg); }
+    100% { transform: rotate(20deg); }
+  }
+
+  @keyframes puppy-breathe {
+    0% { transform: translateY(0px) scale(1); }
+    100% { transform: translateY(-3px) scale(1.02); }
+  }
+
+  @keyframes heart-pulse {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.15); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.15); }
+    70% { transform: scale(1); }
+  }
+
+  @keyframes float-slow {
+    0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.8; }
+    90% { opacity: 0.8; }
+    100% { transform: translateY(-120px) rotate(20deg); opacity: 0; }
+  }
+
+  @keyframes sparkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+  }
+
+  @keyframes tongue-pant {
+    0% { transform: translateY(0px) scaleY(1); }
+    100% { transform: translateY(2px) scaleY(1.1); }
+  }
+}
+
+/* Custom Utilities and Reset */
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-sans);
+  background-color: var(--color-love-light);
+  overflow-x: hidden;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-love-light);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-love-pastel);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-love-soft);
+}
